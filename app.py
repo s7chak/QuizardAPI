@@ -5,6 +5,14 @@ from datetime import timedelta
 from flask_session import Session
 
 app = Flask(__name__)
+app.secret_key = 'quizardapi_sc'
+app.config['SESSION_PERMANENT'] = True
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
+app.config['SESSION_COOKIE_NAME'] = 'quizard_session'
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+CORS(app, supports_credentials=True)
+Session(app)
 
 @app.route("/getText", methods=["POST"])
 def get_text():
@@ -27,23 +35,29 @@ def get_text():
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
-@app.route('/set_data')
-def set_data():
-    session['user_id'] = 12345  # Set some data
-    return 'Data set in session.'
+@app.route("/generateQuiz", methods=["POST"])
+def generate_quiz():
+    """
+        Endpoint to generate quiz using Open AI credentials
+        Expects a JSON payload: { "ai_key": "" }
+    """
+    try:
+        data = request.get_json()
+        if not data or "aiKey" not in data:
+            return jsonify({"error": "Invalid input. 'links' field is required."}), 400
+        ai_key = data["aiKey"]
+        difficulties = data["difficulties"]
 
-@app.route('/get_data')
-def get_data():
-    user_id = session.get('user_id', None)  # Get the session data
-    return f'User ID: {user_id}'
+        util = Util()
+        util.generate_quiz(ai_key, difficulties)
+        generated_quiz = session[session.sid]['quiz']
+        return jsonify({"quiz": generated_quiz}), 200
+    except Exception as e:
+        return jsonify({"quiz": f"An error occurred: {str(e)}"}), 500
+
+@app.route("/clearSessionz", methods=["GET"])
+def clear_sessions():
+    session.clear()
 
 if __name__ == "__main__":
-    app.secret_key = 'quizardapi_sc'
-    app.config['SESSION_PERMANENT'] = True
-    app.config['SESSION_TYPE'] = 'filesystem'
-    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
-    app.config['SESSION_COOKIE_NAME'] = 'quizard_session'
-    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-    CORS(app)
-    Session(app)
     app.run(host="0.0.0.0", port=1000)
