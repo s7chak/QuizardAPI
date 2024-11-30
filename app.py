@@ -58,6 +58,11 @@ def generate_quiz():
 @app.route("/clearSessionz", methods=["GET"])
 def clear_sessions():
     session.clear()
+    return jsonify({"message": "Done"}), 200
+
+@app.route("/health", methods=["GET"])
+def running():
+    return "Quizard API Running."
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=1000)

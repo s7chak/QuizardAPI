@@ -18,9 +18,9 @@ from config import Config
 
 class LanguageModel:
     def __init__(self):
-        openai.api_key = os.getenv("AIKEY")
+        openai.api_key = os.getenv("OPENAI_API_KEY")
         if not openai.api_key:
-            raise ValueError("AIKEY is not set in the environment")
+            raise ValueError("OPENAI_API_KEY is not set in the environment")
         self.qa = None
 
     def doc_feed(self, txt):
@@ -125,6 +125,7 @@ class Util():
                 lm.train_llm(txt)
             except Exception as e:
                 session[session.sid]['quiz'] = 'LLM training not done.'
+                return
 
             try:
                 counts = sum(difficulties)
@@ -136,7 +137,8 @@ class Util():
                 session[session.sid]['count'] += 1
             except Exception as e:
                 session[session.sid]['quiz'] = 'Quiz not generated.'
-        session[session.sid]['quiz'] = f'Quiz generation limit reached : {Config.quiz_limit}'
+        else:
+            session[session.sid]['quiz'] = f'Quiz generation limit reached : {Config.quiz_limit}'
 
     def get_text_corpus(self):
         return session[session.sid]['corpus']
