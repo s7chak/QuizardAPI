@@ -16,9 +16,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE $PORT
 
 # Define environment variable
-ENV NAME FolioAPI
+ENV NAME QuizardAPI
 
 # Run app.py when the container launches
 #CMD ["python", "app.py"]
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 4 --timeout 0 app:app
 
