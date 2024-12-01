@@ -64,5 +64,9 @@ def clear_sessions():
 def running():
     return "Quizard API Running."
 
+@app.route("/", methods=["GET"])
+def home():
+    return "Quizard API v1.0"
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=1000)
+    app.run(host="0.0.0.0", port=8080)
