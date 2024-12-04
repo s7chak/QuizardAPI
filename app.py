@@ -3,14 +3,13 @@ from flask_cors import CORS
 from ops.opapp import Util
 from datetime import timedelta
 from flask_session import Session
+import os
 
 app = Flask(__name__)
 app.secret_key = 'quizardapi_sc'
 app.config['SESSION_PERMANENT'] = True
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
-app.config['SESSION_COOKIE_NAME'] = 'quizard_session'
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 CORS(app, supports_credentials=True)
 Session(app)
 
@@ -64,9 +63,10 @@ def clear_sessions():
 def running():
     return "Quizard API Running."
 
-@app.route("/", methods=["GET"])
+@app.route("/")
 def home():
-    return "Quizard API v1.0"
+    return "Quizard API running."
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    port = int(os.environ.get("PORT", 8080))  # Default to 8080 if PORT is not set
+    app.run(host="0.0.0.0", port=port)
