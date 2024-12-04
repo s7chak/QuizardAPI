@@ -10,3 +10,4 @@ chromadb
 unstructured
 tiktoken
 openai
+langchain
