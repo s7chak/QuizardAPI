@@ -1,19 +1,16 @@
-import hashlib
 import json
 import os
 
 import openai
-import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from config import Config
+from flask import session
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
-from langchain.document_loaders import DirectoryLoader
 from langchain.docstore.document import Document
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
-from flask import session
-from config import Config
 
 
 class LanguageModel:

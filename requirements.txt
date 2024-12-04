@@ -11,3 +11,4 @@ unstructured
 tiktoken
 openai
 langchain
+langchain_community
