@@ -8,7 +8,7 @@ from flask import session
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 from langchain.docstore.document import Document
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 
 from config import Config

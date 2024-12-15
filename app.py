@@ -56,7 +56,7 @@ def generate_quiz():
         generated_quiz = session[session.sid]['quiz'] if session.sid in session and 'quiz' in session[session.sid] else q
         return jsonify({"quiz": generated_quiz}), 200
     except Exception as e:
-        return jsonify({"quiz": f"An error occurred: {str(e)}"}), 500
+        return jsonify({"quiz": f"An error occurred: {str(e)}", "error": str(e), "message": str(e)}), 500
 
 @app.route("/clearSessionz", methods=["GET"])
 def clear_sessions():
