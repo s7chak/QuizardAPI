@@ -29,8 +29,7 @@ def get_text():
         if not isinstance(links, list) or not all(isinstance(link, str) for link in links):
             return jsonify({"error": "Invalid 'links'. Must be a list of strings."}), 400
         util = Util()
-        util.extract_text(links)
-        extracted_text = session[session.sid]['corpus']
+        extracted_text = util.extract_text(links)
         return jsonify({"text": extracted_text}), 200
 
     except Exception as e:
