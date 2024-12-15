@@ -5,7 +5,7 @@ requests
 beautifulsoup4
 flask
 flask-cors
-flask-session
+flask-caching
 chromadb
 unstructured
 tiktoken

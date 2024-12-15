@@ -10,6 +10,8 @@ app.secret_key = 'quizardapi_sc'
 app.config['SESSION_PERMANENT'] = True
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
+app.config['SESSION_COOKIE_NAME'] = 'quizard_session'
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 CORS(app, supports_credentials=True)
 Session(app)
 
@@ -46,10 +48,9 @@ def generate_quiz():
             return jsonify({"error": "Invalid input. 'links' field is required."}), 400
         ai_key = data["aiKey"]
         difficulties = data["difficulties"]
-
         util = Util()
-        util.generate_quiz(ai_key, difficulties)
-        generated_quiz = session[session.sid]['quiz']
+        q = util.generate_quiz(ai_key, difficulties)
+        generated_quiz = session[session.sid]['quiz'] if session.sid in session else q
         return jsonify({"quiz": generated_quiz}), 200
     except Exception as e:
         return jsonify({"quiz": f"An error occurred: {str(e)}"}), 500
@@ -62,11 +63,10 @@ def clear_sessions():
 @app.route("/health", methods=["GET"])
 def running():
     return "Quizard API Running."
-
 @app.route("/")
 def home():
     return "Quizard API running."
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))  # Default to 8080 if PORT is not set
+    port = int(os.environ.get("PORT", 1000))  # Default to 8080 if PORT is not set
     app.run(host="0.0.0.0", port=port)

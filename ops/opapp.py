@@ -1,16 +1,19 @@
+import hashlib
 import json
 import os
 
 import openai
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-from config import Config
-from flask import session
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
+from langchain.document_loaders import DirectoryLoader
 from langchain.docstore.document import Document
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
+from flask import session
+from config import Config
 
 
 class LanguageModel:
@@ -132,8 +135,9 @@ class Util():
                 if 'count' not in session[session.sid]:
                     session[session.sid]['count'] = 0
                 session[session.sid]['count'] += 1
+                return quiz_json
             except Exception as e:
-                session[session.sid]['quiz'] = 'Quiz not generated.'
+                session[session.sid]['quiz'] = f'Quiz not generated: {e}'
         else:
             session[session.sid]['quiz'] = f'Quiz generation limit reached : {Config.quiz_limit}'
 
