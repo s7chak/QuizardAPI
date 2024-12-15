@@ -122,10 +122,13 @@ class Util():
             try:
                 txt = self.get_text_corpus(links)
                 lm = LanguageModel()
-                lm.train_llm(txt, key)
+                if txt:
+                    lm.train_llm(txt, key)
+                else:
+                    raise Exception("No text detected")
             except Exception as e:
                 session[session.sid]['quiz'] = 'LLM training not done.'
-                raise
+                raise e
 
             try:
                 counts = sum(difficulties)
