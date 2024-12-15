@@ -66,6 +66,9 @@ def running():
 @app.route("/")
 def home():
     return "Quizard API running."
+@app.route("/sesh")
+def sesh():
+    return jsonify({"message": "Done", "session": session}), 200
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 1000))  # Default to 8080 if PORT is not set
