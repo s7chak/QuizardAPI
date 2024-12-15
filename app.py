@@ -46,17 +46,15 @@ def generate_quiz():
         data = request.get_json()
         if not data or "links" not in data:
             return jsonify({"error": "Invalid input. 'links' field is required."}), 400
-        if not data or "aiKey" not in data:
-            return jsonify({"error": "Invalid input. 'links' field is required."}), 400
-        ai_key = data["aiKey"]
-        links = data["links"]
+        ai_key = data["aiKey"] if "aiKey" in data else None
+        links = data["links"] if "links" in data else None
         difficulties = data["difficulties"]
         util = Util()
         q = util.generate_quiz(ai_key, links, difficulties)
-        generated_quiz = session[session.sid]['quiz'] if session.sid in session and 'quiz' in session[session.sid] else q
+        generated_quiz = session[session.sid]['quiz'] if session.sid in session else q
         return jsonify({"quiz": generated_quiz}), 200
     except Exception as e:
-        return jsonify({"quiz": f"An error occurred: {str(e)}", "error": str(e), "message": str(e)}), 500
+        return jsonify({"quiz": f"An error occurred: {str(e)}"}), 500
 
 @app.route("/clearSessionz", methods=["GET"])
 def clear_sessions():
@@ -69,9 +67,6 @@ def running():
 @app.route("/")
 def home():
     return "Quizard API running."
-@app.route("/sesh")
-def sesh():
-    return jsonify({"message": "Done", "session": str(session)}), 200
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 1000))  # Default to 8080 if PORT is not set

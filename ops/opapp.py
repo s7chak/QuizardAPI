@@ -23,8 +23,8 @@ class LanguageModel:
         self.qa = None
 
     def doc_feed(self, txt, aiKey=None):
-        key = os.getenv("OPENAI_API_KEY") if not aiKey else aiKey
-        embeddings = OpenAIEmbeddings(key)
+        key = aiKey if aiKey else os.getenv("OPENAI_API_KEY")
+        embeddings = OpenAIEmbeddings(openai_api_key=key)
         doc = Document(page_content=txt)
         docsearch = Chroma.from_documents([doc], embeddings)
         # llm = InferenceOpenAI(model_name="gpt-3.5-turbo", temperature=0.2)
@@ -46,8 +46,8 @@ class LanguageModel:
         response = self.doc_query(quiz_prompt)
         return response
 
-    def train_llm(self, txt, key=None):
-        self.doc_feed(txt=txt, aiKey=key)
+    def train_llm(self, txt, aiKey=None):
+        self.doc_feed(txt=txt, aiKey=aiKey)
 
 
     def save_quiz_as_json(self, quiz_json, file_path):
@@ -122,7 +122,7 @@ class Util():
             try:
                 txt = self.get_text_corpus(links)
                 lm = LanguageModel()
-                lm.train_llm(txt, key=key)
+                lm.train_llm(txt, key)
             except Exception as e:
                 session[session.sid]['quiz'] = 'LLM training not done.'
                 raise
