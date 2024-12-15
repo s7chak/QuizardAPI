@@ -8,7 +8,7 @@ from flask import session
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 from langchain.docstore.document import Document
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 
 
@@ -16,8 +16,8 @@ from config import Config
 
 
 class LanguageModel:
-    def __init__(self):
-        openai.api_key = os.getenv("OPENAI_API_KEY")
+    def __init__(self, aiKey=None):
+        openai.api_key = aiKey if aiKey else os.getenv("OPENAI_API_KEY")
         if not openai.api_key:
             raise ValueError("OPENAI_API_KEY is not set in the environment")
         self.qa = None
