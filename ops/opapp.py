@@ -114,11 +114,11 @@ class Util():
         except Exception as e:
             return f"Error processing {link}: {str(e.args[1])}"
 
-    def generate_quiz(self, key, difficulties):
+    def generate_quiz(self, key, links, difficulties):
         count = 0 if (session.sid not in session) or ('count' not in session[session.sid]) else session[session.sid]['count']
         if count < Config.quiz_limit:
             try:
-                txt = self.get_text_corpus()
+                txt = self.get_text_corpus(links)
                 lm = LanguageModel()
                 lm.train_llm(txt)
             except Exception as e:
@@ -141,5 +141,6 @@ class Util():
             session[session.sid]['quiz'] = f'Quiz generation limit reached : {Config.quiz_limit}'
             return f'Quiz generation limit reached : {Config.quiz_limit}'
 
-    def get_text_corpus(self):
-        return session[session.sid]['corpus'] if session.sid in session and session[session.sid] else "No text context found."
+    def get_text_corpus(self, links):
+        corpus = session[session.sid]['corpus'] if session.sid in session and session[session.sid] and 'corpus' in session[session.sid] else self.extract_text(links)
+        return corpus

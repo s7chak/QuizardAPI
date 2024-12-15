@@ -44,12 +44,15 @@ def generate_quiz():
     """
     try:
         data = request.get_json()
+        if not data or "links" not in data:
+            return jsonify({"error": "Invalid input. 'links' field is required."}), 400
         if not data or "aiKey" not in data:
             return jsonify({"error": "Invalid input. 'links' field is required."}), 400
         ai_key = data["aiKey"]
+        links = data["links"]
         difficulties = data["difficulties"]
         util = Util()
-        q = util.generate_quiz(ai_key, difficulties)
+        q = util.generate_quiz(ai_key, links, difficulties)
         generated_quiz = session[session.sid]['quiz'] if session.sid in session and 'quiz' in session[session.sid] else q
         return jsonify({"quiz": generated_quiz}), 200
     except Exception as e:
