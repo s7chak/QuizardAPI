@@ -24,7 +24,7 @@ class LanguageModel:
 
     def doc_feed(self, txt, aiKey=None):
         key = os.getenv("OPENAI_API_KEY") if not aiKey else aiKey
-        embeddings = OpenAIEmbeddings()
+        embeddings = OpenAIEmbeddings(key)
         doc = Document(page_content=txt)
         docsearch = Chroma.from_documents([doc], embeddings)
         # llm = InferenceOpenAI(model_name="gpt-3.5-turbo", temperature=0.2)
