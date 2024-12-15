@@ -142,4 +142,4 @@ class Util():
             return f'Quiz generation limit reached : {Config.quiz_limit}'
 
     def get_text_corpus(self):
-        return session[session.sid]['corpus'] if session[session.sid] else "No text context found."
+        return session[session.sid]['corpus'] if session.sid in session and session[session.sid] else "No text context found."
