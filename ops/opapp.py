@@ -1,18 +1,16 @@
-import hashlib
 import json
 import os
 
 import openai
-import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from flask import session
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
-from langchain.document_loaders import DirectoryLoader
 from langchain.docstore.document import Document
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
-from flask import session
+
 from config import Config
 
 
@@ -125,7 +123,7 @@ class Util():
                 lm.train_llm(txt)
             except Exception as e:
                 session[session.sid]['quiz'] = 'LLM training not done.'
-                return
+                raise
 
             try:
                 counts = sum(difficulties)
@@ -138,8 +136,10 @@ class Util():
                 return quiz_json
             except Exception as e:
                 session[session.sid]['quiz'] = f'Quiz not generated: {e}'
+                raise e
         else:
             session[session.sid]['quiz'] = f'Quiz generation limit reached : {Config.quiz_limit}'
+            return f'Quiz generation limit reached : {Config.quiz_limit}'
 
     def get_text_corpus(self):
-        return session[session.sid]['corpus']
+        return session[session.sid]['corpus'] if session[session.sid] else "No text context found."
