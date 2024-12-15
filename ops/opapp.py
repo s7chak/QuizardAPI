@@ -101,6 +101,7 @@ class Util():
             article_text = session[l]
             corpus_text += f'{article_text}\n---\n'
         session[key]['corpus'] = corpus_text
+        return corpus_text
 
     def save_link_content(self, link):
         try:
